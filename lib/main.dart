@@ -1,16 +1,27 @@
+import 'package:chuck2wiz/pages/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 void main() {
-  runApp(const MyApp());
-}
+  WidgetsFlutterBinding.ensureInitialized();
+  // runApp() 호출 전 Flutter SDK 초기화
+  KakaoSdk.init(
+    nativeAppKey: '${YOUR_NATIVE_APP_KEY}',
+    javaScriptAppKey: '${YOUR_JAVASCRIPT_APP_KEY}',
+  );
+    runApp(MyApp());
+  }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      initialRoute: "/login",
+      routes: {
+        "/login": (context) => LoginPage(),
+      },
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
