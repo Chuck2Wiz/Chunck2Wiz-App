@@ -15,4 +15,9 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+    
+    <string name="client_id">kZIU1fTxzHRWy9N5Hrlu</string>
+    <string name="client_secret">jXrrBMZM_H</string>
+    <string name="client_name">chuck2wiz</string>
+    <string name="kakao_native_key">c5e08411b902099a19235d7a69ec9bd6</string>
 </resources>

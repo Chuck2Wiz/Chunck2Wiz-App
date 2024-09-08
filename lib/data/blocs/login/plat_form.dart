@@ -1,0 +1,3 @@
+enum PlatForm {
+  kakao, naver
+}
