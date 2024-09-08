@@ -35,3 +35,7 @@ Runner/GeneratedPluginRegistrant.*
 !default.perspectivev3
 
 ios/Runner/info.plist
+
+*.plist
+
+Info.plist
