@@ -44,6 +44,6 @@ app.*.map.json
 
 *.env
 
-*.Info.plist
+*.plist
 /android/app/src/main/res/values/styles.xml
 /android/app/src/main/AndroidManifest.xml
