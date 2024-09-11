@@ -41,3 +41,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+*.env
+
+*.plist
+/android/app/src/main/res/values/styles.xml
+/android/app/src/main/AndroidManifest.xml
