@@ -44,7 +44,7 @@ class SignUpBloc extends Bloc<SignupEvent, SignUpState> {
     emit(state.copyWith(isSubmitting: true, isSuccess: false, isError: false, nickError: false));
     try {
       await userRepository.registerUser(
-        userNum: '1234',
+        userNum: state.userNum,
         nick: state.nick,
         age: state.age,
         gender: state.gender,
