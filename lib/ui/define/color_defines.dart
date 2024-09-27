@@ -6,4 +6,5 @@ class ColorDefines {
   static const Color primaryBlack = Color(0xFF000000);
   static const Color primaryWhite = Color(0xFFFFFFFF);
   static const Color mainColor = Color(0xFF5D71BF);
+  static const Color primaryGray = Color(0xFFA9AABC);
 }

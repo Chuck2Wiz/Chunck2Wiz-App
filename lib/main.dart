@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
             name: '/signUp',
-            page: () => const SignupPage(),
+            page: () => SignUpPage(),
         )
       ],
       theme: ThemeData(
