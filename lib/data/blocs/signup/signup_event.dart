@@ -52,6 +52,15 @@ class JobChanged extends SignupEvent {
   List<Object> get props => [job];
 }
 
+class CheckNickInfoChanged extends SignupEvent {
+  final String checkNickInfo;
+
+  const CheckNickInfoChanged(this.checkNickInfo);
+
+  @override
+  List<Object> get props => [checkNickInfo];
+}
+
 class FavoriteChanged extends SignupEvent {
   final List<String> favorite;
 
@@ -62,7 +71,6 @@ class FavoriteChanged extends SignupEvent {
 }
 
 class FormSubmitted extends SignupEvent {
-  final String userNum;
   final String nick;
   final int age;
   final String gender;
@@ -70,7 +78,6 @@ class FormSubmitted extends SignupEvent {
   final List<String> favorite;
 
   const FormSubmitted({
-    required this.userNum,
     required this.nick,
     required this.age,
     required this.gender,
@@ -79,5 +86,5 @@ class FormSubmitted extends SignupEvent {
   });
 
   @override
-  List<Object> get props => [userNum, nick, age, gender, job, favorite];
+  List<Object> get props => [nick, age, gender, job, favorite];
 }

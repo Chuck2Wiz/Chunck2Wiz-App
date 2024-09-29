@@ -12,12 +12,14 @@ class LoginInitial extends LoginState {}
 class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {
-  final String userId;
+  final bool isInitUser;
 
-  const LoginSuccess({required this.userId});
+  const LoginSuccess({required this.isInitUser});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+    isInitUser
+  ];
 }
 
 class LoginFailure extends LoginState {
@@ -26,5 +28,7 @@ class LoginFailure extends LoginState {
   const LoginFailure({required this.error});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+    error
+  ];
 }
