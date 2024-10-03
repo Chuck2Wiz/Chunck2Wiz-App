@@ -1,5 +1,8 @@
+import 'package:chuck2wiz/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../data/blocs/signup/signup_bloc.dart';
 import '../../data/blocs/signup/signup_event.dart';
 import '../../data/blocs/signup/signup_state.dart';
@@ -22,13 +25,23 @@ class SignUpPage extends BasePage<SignUpBloc, SignUpState> {
   Color get backgroundColor => ColorDefines.primaryWhite;
 
   @override
+  void onBlockListener(BuildContext context, SignUpState state) {
+    print("signUpState: $state");
+    if (state.submitInfo.isSuccess == true) {
+      Get.offAllNamed('/main');
+    }
+  }
+
+  @override
   Widget buildContent(BuildContext context, SignUpState state) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('회원가입'),
         centerTitle: true,
         automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
       ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -38,6 +51,7 @@ class SignUpPage extends BasePage<SignUpBloc, SignUpState> {
                 child: Column(
                   children: [
                     _buildNickField(context),
+                    _checkNickInfo(),
                     verticalSpace(),
                     _buildAgeField(context),
                     verticalSpace(),
@@ -81,17 +95,75 @@ class SignUpPage extends BasePage<SignUpBloc, SignUpState> {
                     ),
                   ),
                   initialValue: state.nick,
-                  onChanged: (value) => context.read<SignUpBloc>().add(NicknameChanged(value)),
+                  onChanged: (value) {
+                    context.read<SignUpBloc>()
+                        .add(NicknameChanged(value));
+                   if(value.isNotEmpty) {
+                     context.read<SignUpBloc>()
+                         .add(CheckNickInfoChanged(value));
+                   }
+                  },
                 ),
               ),
             ],
           ),
-          errorText: state.nickError ? '중복된 닉네임입니다.' : null,
         );
       },
     );
   }
 
+  Widget _checkNickInfo() {
+    return BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
+          return Column(
+            children: [
+              Visibility(
+                  visible: state.nick.isNotEmpty && state.checkNickInfo.isAvailable == true,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: _checkNickInfoTextWidget(
+                      text: "사용가능한 닉네임입니다.",
+                      textStyle: const TextStyle(
+                          color: ColorDefines.successGreen,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold
+                      ),
+                    )
+                  )
+              ),
+              Visibility(
+                  visible: state.nick.isNotEmpty && state.checkNickInfo.isAvailable == false,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: _checkNickInfoTextWidget(
+                        text: "이미 등록된 닉네임입니다.",
+                        textStyle: const TextStyle(
+                            color: ColorDefines.failRed,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold
+                        )
+                    ),
+                  )
+              ),
+              Visibility(
+                  visible: state.nick.isEmpty && state.checkNickInfo.isAvailable == null,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: _checkNickInfoTextWidget(
+                        text: "닉네임을 입력해주세요.",
+                        textStyle: const TextStyle(
+                            color: ColorDefines.primaryGray,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold
+                        )
+                    ),
+                  )
+              )
+            ],
+          );
+        }
+    );
+  }
 
   Widget _buildAgeField(BuildContext context) {
     return BlocBuilder<SignUpBloc, SignUpState>(
@@ -239,7 +311,6 @@ class SignUpPage extends BasePage<SignUpBloc, SignUpState> {
       child: ElevatedButton(
         onPressed: state.isValid
             ? () => context.read<SignUpBloc>().add(FormSubmitted(
-          userNum: state.userNum,
           nick: state.nick,
           age: state.age,
           gender: state.gender,
@@ -254,7 +325,7 @@ class SignUpPage extends BasePage<SignUpBloc, SignUpState> {
           side: BorderSide(
               color: state.isValid
                   ? ColorDefines.mainColor
-                  : ColorDefines.primaryGray),
+                  : Colors.transparent),
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(inputBorderRadius)),
@@ -286,6 +357,13 @@ class SignUpPage extends BasePage<SignUpBloc, SignUpState> {
             child: Text(errorText, style: const TextStyle(color: Colors.red)),
           ),
       ],
+    );
+  }
+
+  Widget _checkNickInfoTextWidget({required String text, required TextStyle textStyle}) {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      child: Text(text, style: textStyle),
     );
   }
 }

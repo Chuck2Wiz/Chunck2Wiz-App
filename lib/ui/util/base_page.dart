@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../data/blocs/main/main_state.dart';
+
 abstract class BasePage<B extends BlocBase<S>, S> extends StatelessWidget {
   const BasePage({super.key});
 
@@ -24,6 +26,19 @@ abstract class BasePage<B extends BlocBase<S>, S> extends StatelessWidget {
   @protected
   SystemUiOverlayStyle get systemUiOverlayStyle => SystemUiOverlayStyle.dark;
 
+  /// 하단 네비게이션바 정의
+  @protected
+  Widget? buildBottomNavigationBar(BuildContext context, int currentIndex) => null;
+
+  /// 선택된 하단 네비게이션 인덱스 가져오기
+  @protected
+  int getSelectBottomNavIndex(S state) {
+    if (state is BottomNavIndex) {
+      return state.bottomNavIndex; // 현재 인덱스를 반환
+    }
+    return 0; // 기본값
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
@@ -34,11 +49,23 @@ abstract class BasePage<B extends BlocBase<S>, S> extends StatelessWidget {
         listener: onBlockListener,
         child: Scaffold(
           backgroundColor: backgroundColor,
-          body: SafeArea(
-            child: BlocBuilder<B, S>(
+          bottomNavigationBar: BlocBuilder<B, S>(
               builder: (context, state) {
-                return buildContent(context, state);
-              },
+                int currentIndex = getSelectBottomNavIndex(state);
+
+                return buildBottomNavigationBar(context, currentIndex) ?? const SizedBox(height: 0,width: 0,);
+              }
+          ),
+          body: GestureDetector(
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기
+            },
+            child: SafeArea(
+              child: BlocBuilder<B, S>(
+                builder: (context, state) {
+                  return buildContent(context, state); // 콘텐츠 빌드
+                },
+              ),
             ),
           ),
         ),

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:chuck2wiz/data/blocs/login/plat_form.dart';
+import 'package:chuck2wiz/data/repository/login_repository.dart';
 import 'package:chuck2wiz/ui/define/color_defines.dart';
 import 'package:chuck2wiz/ui/util/base_page.dart';
 import 'package:chuck2wiz/ui/widget/sns_login_button_widget.dart';
@@ -18,14 +19,18 @@ class LoginPage extends BasePage<LoginBloc, LoginState> {
 
   @override
   LoginBloc createBloc(BuildContext context) {
-    return LoginBloc();
+    return LoginBloc(LoginRepository());
   }
 
   @override
   void onBlockListener(BuildContext context, LoginState state) {
     if (state is LoginSuccess) {
-      print("Success Login: ${state.userId}");
-      Get.toNamed('/signUp');
+      print("state: ${state.isInitUser}");
+      if(state.isInitUser) {
+        Get.toNamed('/signUp');
+      } else {
+        Get.toNamed('/main');
+      }
     }
   }
 
@@ -41,21 +46,25 @@ class LoginPage extends BasePage<LoginBloc, LoginState> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(left: 24),
-          child: appTitleText(),
+    return Center(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(left: 24),
+              child: appTitleText(),
+            ),
+            const SizedBox(height: 48),
+            loginBannerImage(),
+            const SizedBox(height: 24),
+            snsLoginButtons(
+                    () => onClickNaverLogin(context),
+                    () => onClickKakaoLogin(context)
+            ),
+          ],
         ),
-        const SizedBox(height: 48),
-        loginBannerImage(),
-        const SizedBox(height: 24),
-        snsLoginButtons(
-            () => onClickNaverLogin(context),
-            () => onClickKakaoLogin(context)
-        )
-      ],
+      ),
     );
   }
 
