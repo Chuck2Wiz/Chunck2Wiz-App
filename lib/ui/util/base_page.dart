@@ -39,20 +39,33 @@ abstract class BasePage<B extends BlocBase<S>, S> extends StatelessWidget {
     return 0; // 기본값
   }
 
+  /// 초기화를 위한 메서드
+  @protected
+  void onInit(BuildContext context, B bloc) {
+    // 초기화에 필요한 Bloc 이벤트 추가
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
 
+    final bloc = createBloc(context);
+
+    print("basePage State: ${bloc.state}");
+    // 초기화 수행
+    onInit(context, bloc);
+
     return BlocProvider<B>(
-      create: createBloc,
+      create: (context) => bloc,
       child: BlocListener<B, S>(
-        listener: onBlockListener,
+        listener: (context, state) {
+          onBlockListener(context, state); // 상태 변화에 따른 로직 처리
+        },
         child: Scaffold(
           backgroundColor: backgroundColor,
           bottomNavigationBar: BlocBuilder<B, S>(
               builder: (context, state) {
                 int currentIndex = getSelectBottomNavIndex(state);
-
                 return buildBottomNavigationBar(context, currentIndex) ?? const SizedBox(height: 0,width: 0,);
               }
           ),

@@ -72,6 +72,21 @@ class _BottomNavigationWidget extends State<BottomNavigationWidget> {
             height: _height,
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(18),
+                  topRight: Radius.circular(18)
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  offset: const Offset(0, 3),
+                  blurRadius: 4,
+                  spreadRadius: 4
+                )
+              ]
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: widget.items.asMap().entries.map((entry) {
