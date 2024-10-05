@@ -42,9 +42,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           await UserApi.instance.loginWithKakaoTalk();
           final user = await UserApi.instance.me();
 
-          await SharedPreferencesHelper.saveUserNum(user.id.toString());
-
           final bool isExistUser = await checkExistUser(userNum: user.id.toString());
+
+          await SharedPreferencesHelper.saveUserNum(user.id.toString());
 
           emit(LoginSuccess(isInitUser: !isExistUser));
         } catch (error) {
