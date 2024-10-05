@@ -54,7 +54,7 @@ class SignUpRepository {
     return favorites.map((favorite) =>
     switch (favorite) {
       '교통사고' => 'TRAFFIC_ACCIDENT',
-      '명예훼손 및 모욕' => 'DEFAMATION',
+      '명예훼손' => 'DEFAMATION',
       '임대차' => 'RENTAL',
       '이혼' => 'DIVORCE',
       '폭행' => 'ASSAULT',
