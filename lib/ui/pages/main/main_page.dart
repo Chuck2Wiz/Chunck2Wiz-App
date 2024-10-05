@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/blocs/main/community/community_bloc.dart';
+import '../../../data/blocs/main/community/community_event.dart';
 import '../../../data/blocs/main/main_event.dart';
 import '../../widget/bottomBar/bottom_navigation_widget.dart';
 
@@ -29,7 +31,10 @@ class MainPage extends BasePage<MainBloc, MainState> {
       case 1:
         return AiPage();
       case 2:
-        return CommunityPage();
+        return BlocProvider<CommunityBloc>(
+          create: (context) => CommunityBloc()..add(const GetArticles()), // 필요한 이벤트를 추가
+          child: CommunityPage(),
+        );
       case 3:
         return MyPage();
       default:
