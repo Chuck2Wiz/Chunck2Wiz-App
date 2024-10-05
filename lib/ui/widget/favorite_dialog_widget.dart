@@ -7,11 +7,7 @@ class FavoriteDialog extends StatefulWidget {
 }
 
 class _FavoriteDialogState extends State<FavoriteDialog> {
-  final List<String> favorite = [
-    '분야1', '분야2', '분야3', '분야4',
-    '분야5', '분야6', '분야7', '분야8',
-    '분야9', '분야10', '분야11', '분야12',
-  ];
+  final List<String> favorite = ['교통사고', '명예훼손', '임대차', '이혼', '폭행', '사기', '성범죄', '저작권'];
 
   final List<String> selectedFavorite = [];
 
