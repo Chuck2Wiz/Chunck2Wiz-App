@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:chuck2wiz/data/http/base_http.dart';
 import 'package:chuck2wiz/data/server/response/auth/check_nick_response.dart';
 import 'package:chuck2wiz/data/server/response/auth/check_user_response.dart';
+import 'package:chuck2wiz/data/server/response/auth/get_user_info_response.dart';
 import 'package:chuck2wiz/data/server/vo/auth/check_nick_vo.dart';
 import 'package:chuck2wiz/data/server/vo/auth/check_user_vo.dart';
 import 'package:chuck2wiz/data/server/vo/auth/sign_up_vo.dart';
@@ -45,6 +46,7 @@ class AuthRequest {
 
       return parsedResponse;
     } catch (e) {
+      print("ERROR: $e");
       rethrow;
     }
   }
@@ -62,6 +64,21 @@ class AuthRequest {
 
       return CheckNickResponse.fromJson(jsonDecode(response));
     } catch(e) {
+      rethrow;
+    }
+  }
+
+  /**
+   *  /user/:userNum
+   */
+  Future<GetUserInfoResponse> getUserInfo(String userNum) async {
+    final url = Uri.parse('$BASE_URL/user/$userNum');
+
+    try {
+      final response = await BaseHttp().get(url.toString());
+
+      return GetUserInfoResponse.fromJson(jsonDecode(response));
+    } catch (e) {
       rethrow;
     }
   }

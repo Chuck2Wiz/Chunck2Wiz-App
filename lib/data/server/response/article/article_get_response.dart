@@ -86,7 +86,7 @@ class SanitizedPost {
   String toRawJson() => json.encode(toJson());
 
   factory SanitizedPost.fromJson(Map<String, dynamic> json) => SanitizedPost(
-    id: json["_id"],
+    id: json["id"],
     title: json["title"],
     content: json["content"],
     author: Author.fromJson(json["author"]),
@@ -99,7 +99,7 @@ class SanitizedPost {
   );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
+    "id": id,
     "title": title,
     "content": content,
     "author": author.toJson(),
@@ -124,7 +124,7 @@ class Author {
   String toRawJson() => json.encode(toJson());
 
   factory Author.fromJson(Map<String, dynamic> json) => Author(
-    nick: json["nick"],
+    nick: json["nick"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

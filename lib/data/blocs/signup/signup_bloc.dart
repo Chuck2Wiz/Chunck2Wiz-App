@@ -3,7 +3,7 @@ import 'package:chuck2wiz/data/db/shared_preferences_helper.dart';
 import 'package:chuck2wiz/data/http/base_server_exception.dart';
 import 'signup_event.dart';
 import 'signup_state.dart';
-import 'package:chuck2wiz/data/repository/signup_repository.dart';
+import 'package:chuck2wiz/data/repository/auth/signup_repository.dart';
 
 class SignUpBloc extends Bloc<SignupEvent, SignUpState> {
   final SignUpRepository userRepository;
@@ -70,8 +70,6 @@ class SignUpBloc extends Bloc<SignupEvent, SignUpState> {
     try {
       final userNum = await SharedPreferencesHelper.getUserNum() ?? '';
 
-      print("userNum: $userNum");
-
       final response = await userRepository.register(
           userNum: userNum,
           nick: state.nick,
@@ -82,6 +80,7 @@ class SignUpBloc extends Bloc<SignupEvent, SignUpState> {
       );
 
       await SharedPreferencesHelper.saveToken(response.data.token);
+      await SharedPreferencesHelper.saveNick(state.nick);
 
       emit(state.copyWith(submitInfo: const SubmitInfo(isSuccess: true)));
     } catch (e) {

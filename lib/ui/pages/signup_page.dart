@@ -8,7 +8,7 @@ import '../../data/blocs/signup/signup_event.dart';
 import '../../data/blocs/signup/signup_state.dart';
 import '../../ui/util/base_page.dart';
 import 'package:chuck2wiz/ui/define/color_defines.dart';
-import 'package:chuck2wiz/data/repository/signup_repository.dart';
+import 'package:chuck2wiz/data/repository/auth/signup_repository.dart';
 import 'package:chuck2wiz/ui/widget/favorite_dialog_widget.dart';
 
 class SignUpPage extends BasePage<SignUpBloc, SignUpState> {
