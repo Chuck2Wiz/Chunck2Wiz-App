@@ -44,9 +44,10 @@ dependencies:
   get: ^4.6.6
   flutter_config: ^2.0.2
   flutter_dotenv: ^5.1.0
-  flutter_naver_login: ^1.8.0
-  http: ^0.13.5
+  flutter_naver_login: ^2.0.0
+  http: ^1.2.2
   shared_preferences: ^2.0.8
+  image_picker: ^1.1.2
   timeago: ^3.3.0
 
 dev_dependencies:
@@ -58,7 +59,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -75,6 +76,11 @@ flutter:
     - assets/images/ic_bottom_community_deactivate.png
     - assets/images/ic_bottom_home_active.png
     - assets/images/ic_bottom_home_deactivate.png
+    - assets/images/ic_profile.png
+    - assets/images/ic_logout.png
+    - assets/images/ic_delete_account.png
+    - assets/images/ic_folder.png
+    - assets/images/ic_write.png
     - assets/images/ic_button_write.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
