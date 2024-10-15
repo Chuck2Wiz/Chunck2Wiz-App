@@ -1,39 +1,52 @@
 import 'package:bloc/bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/mypage/my_event.dart';
 import 'package:chuck2wiz/data/blocs/main/mypage/my_state.dart';
+import 'package:chuck2wiz/data/server/request/auth/auth_request.dart';
 import '../../../db/shared_preferences_helper.dart';
 
 class MyBloc extends Bloc<MyEvent, MyState> {
-  MyBloc(MyInitial myInitial) : super(MyInitial()) {
-    on<LoadProfile>(_onLoadProfile);
-    on<Logout>(_onLogout);
+  MyBloc() : super(MyInitial()) {
+    on<GetUserInfoEvent>(_onGetUserInfo);
     on<DeleteAccount>(_onDeleteAccount);
   }
 
-  Future<void> _onLoadProfile(LoadProfile event, Emitter<MyState> emit) async {
-    try {
-      final String? nick = await SharedPreferencesHelper.getNick();
-      if (nick != null) {
-        emit(MyProfile(nick));
-      }
-    } catch (error) {
-      print('Failed to load profile: $error');
-    }
-  }
+  Future<void> _onGetUserInfo(GetUserInfoEvent event, Emitter<MyState> emit) async {
+    emit(state.copyWith(isLoading: true));
 
-  Future<void> _onLogout(Logout event, Emitter<MyState> emit) async {
     try {
-      emit(MyLogoutSuccess());
-    } catch (error) {
-      print('Failed to logout: $error');
+      final userNum = await SharedPreferencesHelper.getUserNum();
+
+      if(userNum == null) {
+        throw Exception("userNum is NULL");
+      }
+
+      final response = await AuthRequest().getUserInfo(userNum);
+
+      emit(state.copyWith(getUserInfoResponse: response));
+    } catch(e) {
+      emit(GetUserFailure(error: e));
+    } finally {
+      emit(state.copyWith(isLoading: false));
     }
   }
 
   Future<void> _onDeleteAccount(DeleteAccount event, Emitter<MyState> emit) async {
+    emit(state.copyWith(isLoading: true));
+
     try {
-      emit(MyDeleteAccountSuccess());
+      final userNum = await SharedPreferencesHelper.getUserNum();
+
+      if(userNum == null) {
+        throw Exception("userNum is NULL");
+      }
+
+      final response = await AuthRequest().deleteUser(userNum);
+
+      if(response.success) emit(SuccessDelete());
     } catch (error) {
-      print('Failed to delete account: $error');
+      emit(DeleteFailure(error: error));
+    } finally {
+      emit(state.copyWith(isLoading: false));
     }
   }
 }

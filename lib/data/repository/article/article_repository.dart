@@ -8,7 +8,7 @@ class ArticleRepository {
     return ArticleRequest().createArticle(articleCreateVo);
   }
 
-  Future<ArticleReadResponse> readArticle(String articleId) async {
-    return ArticleRequest().readArticle(articleId);
+  Future<ArticleReadResponse> readArticle({required String articleId, required String userNum}) async {
+    return ArticleRequest().readArticle(articleId: articleId, userNum: userNum);
   }
 }

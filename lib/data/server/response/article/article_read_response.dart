@@ -4,7 +4,7 @@ import 'dart:convert';
 class ArticleReadResponse {
   bool success;
   String message;
-  Data data;
+  Data? data;
 
   ArticleReadResponse({
     required this.success,
@@ -17,15 +17,15 @@ class ArticleReadResponse {
   String toRawJson() => json.encode(toJson());
 
   factory ArticleReadResponse.fromJson(Map<String, dynamic> json) => ArticleReadResponse(
-    success: json["success"],
-    message: json["message"],
-    data: Data.fromJson(json["data"]),
+    success: json["success"] ?? false,
+    message: json["message"] ?? '',
+    data: json["data"] != null ? Data.fromJson(json["data"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "data": data.toJson(),
+    "data": data?.toJson(),
   };
 }
 
@@ -33,11 +33,13 @@ class Data {
   String id;
   String title;
   String content;
-  Author author;
+  Author? author;
   int likes;
+  bool isLikedByUser;
   List<Comment> comments;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  bool isMyArticle;
 
   Data({
     required this.id,
@@ -45,9 +47,11 @@ class Data {
     required this.content,
     required this.author,
     required this.likes,
+    required this.isLikedByUser,
     required this.comments,
     required this.createdAt,
     required this.updatedAt,
+    required this.isMyArticle,
   });
 
   factory Data.fromRawJson(String str) => Data.fromJson(json.decode(str));
@@ -55,30 +59,36 @@ class Data {
   String toRawJson() => json.encode(toJson());
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    id: json["_id"],
-    title: json["title"],
-    content: json["content"],
-    author: Author.fromJson(json["author"]),
-    likes: json["likes"],
-    comments: List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x))),
-    createdAt: DateTime.parse(json["createdAt"]),
-    updatedAt: DateTime.parse(json["updatedAt"]),
+    id: json["id"] ?? '',
+    title: json["title"] ?? '',
+    content: json["content"] ?? '',
+    author: json["author"] != null ? Author.fromJson(json["author"]) : null,
+    likes: json["likes"] ?? 0,
+    isLikedByUser: json["isLikedByUser"] ?? false,
+    comments: json["comments"] != null
+        ? List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x)))
+        : [],
+    createdAt: json["createdAt"] != null ? DateTime.parse(json["createdAt"]) : null,
+    updatedAt: json["updatedAt"] != null ? DateTime.parse(json["updatedAt"]) : null,
+    isMyArticle: json["isMyArticle"] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
-    "_id": id,
+    "id": id,
     "title": title,
     "content": content,
-    "author": author.toJson(),
+    "author": author?.toJson(),
     "likes": likes,
+    "isLikedByUser": isLikedByUser,
     "comments": List<dynamic>.from(comments.map((x) => x.toJson())),
-    "createdAt": createdAt.toIso8601String(),
-    "updatedAt": updatedAt.toIso8601String(),
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+    "isMyArticle": isMyArticle,
   };
 }
 
 class Author {
-  String nick;
+  String? nick;
 
   Author({
     required this.nick,
@@ -89,7 +99,7 @@ class Author {
   String toRawJson() => json.encode(toJson());
 
   factory Author.fromJson(Map<String, dynamic> json) => Author(
-    nick: json["nick"],
+    nick: json["nick"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {
@@ -98,14 +108,16 @@ class Author {
 }
 
 class Comment {
-  Author author;
+  Author? author;
   String id;
   String postId;
   String content;
-  List<dynamic> replies;
-  DateTime createdAt;
-  DateTime updatedAt;
+  List<Comment> replies;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   int v;
+  bool isMyComment;
+  bool isMyReply;
 
   Comment({
     required this.author,
@@ -116,6 +128,8 @@ class Comment {
     required this.createdAt,
     required this.updatedAt,
     required this.v,
+    required this.isMyComment,
+    required this.isMyReply,
   });
 
   factory Comment.fromRawJson(String str) => Comment.fromJson(json.decode(str));
@@ -123,24 +137,30 @@ class Comment {
   String toRawJson() => json.encode(toJson());
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
-    author: Author.fromJson(json["author"]),
-    id: json["_id"],
-    postId: json["postId"],
-    content: json["content"],
-    replies: List<dynamic>.from(json["replies"].map((x) => x)),
-    createdAt: DateTime.parse(json["createdAt"]),
-    updatedAt: DateTime.parse(json["updatedAt"]),
-    v: json["__v"],
+    author: json["author"] != null ? Author.fromJson(json["author"]) : null,
+    id: json["_id"] ?? '',
+    postId: json["postId"] ?? '',
+    content: json["content"] ?? '',
+    replies: json["replies"] != null
+        ? List<Comment>.from(json["replies"].map((x) => Comment.fromJson(x)))
+        : [],
+    createdAt: json["createdAt"] != null ? DateTime.parse(json["createdAt"]) : null,
+    updatedAt: json["updatedAt"] != null ? DateTime.parse(json["updatedAt"]) : null,
+    v: json["__v"] ?? 0,
+    isMyComment: json["isMyComment"] ?? false,
+    isMyReply: json["isMyReply"] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
-    "author": author.toJson(),
+    "author": author?.toJson(),
     "_id": id,
     "postId": postId,
     "content": content,
-    "replies": List<dynamic>.from(replies.map((x) => x)),
-    "createdAt": createdAt.toIso8601String(),
-    "updatedAt": updatedAt.toIso8601String(),
+    "replies": List<dynamic>.from(replies.map((x) => x.toJson())),
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
+    "isMyComment": isMyComment,
+    "isMyReply": isMyReply,
   };
 }

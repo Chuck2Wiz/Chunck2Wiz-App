@@ -9,6 +9,7 @@ Widget _buildSetAccountDialog({
   required VoidCallback onConfirm,
 }) {
   return Dialog(
+    backgroundColor: Colors.white,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10), // Re-add rounded corners
     ),
@@ -74,7 +75,7 @@ Widget _buildSetAccountDialog({
   );
 }
 
-Widget buildLogoutConfirmationDialog(BuildContext context) {
+Widget buildLogoutConfirmationDialog({required BuildContext context, required Function() onClickLogout}) {
   return _buildSetAccountDialog(
     context: context,
     title: '로그아웃 하시겠습니까?',
@@ -84,13 +85,11 @@ Widget buildLogoutConfirmationDialog(BuildContext context) {
   );
 }
 
-Widget buildDeleteAccountConfirmationDialog(BuildContext context) {
+Widget buildDeleteAccountConfirmationDialog({required BuildContext context, required Function() onClickDelete}) {
   return _buildSetAccountDialog(
     context: context,
     title: '정말 탈퇴하시겠습니까?',
     content: '탈퇴를 하실 경우, 회원님의 정보가 모두 사라집니다.',
-    onConfirm: () {
-      // Handle account deletion logic
-    },
+    onConfirm: onClickDelete,
   );
 }

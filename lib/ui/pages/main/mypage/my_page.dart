@@ -1,37 +1,93 @@
 import 'package:chuck2wiz/data/blocs/main/mypage/my_bloc.dart';
+import 'package:chuck2wiz/data/blocs/main/mypage/my_event.dart';
 import 'package:chuck2wiz/data/blocs/main/mypage/my_state.dart';
 import 'package:chuck2wiz/ui/define/color_defines.dart';
+import 'package:chuck2wiz/ui/pages/login_page.dart';
 import 'package:chuck2wiz/ui/util/base_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chuck2wiz/ui/widget/set_account_dialog_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyPage extends BasePage<MyBloc, MyState> {
+  const MyPage({super.key}): super(keepBlocAlive: true);
+  
+  @override
+  MyBloc createBloc(BuildContext context) {
+    return context.read<MyBloc>();
+  }
+
+  @override
+  void onInit(BuildContext context, MyBloc bloc) {
+    if(!bloc.isClosed) {
+      bloc.add(GetUserInfoEvent());
+    }
+  }
+
+
+  @override
+  void onBlockListener(BuildContext context, MyState state) {
+    if(state is SuccessDelete) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false
+      );
+    }
+  }
+
   @override
   Widget buildContent(BuildContext context, MyState state) {
-    return Scaffold(
-    appBar: AppBar(
-      title: const Text('마이페이지'),
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      backgroundColor: Colors.white,
-    ),
-    backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          _buildHeader(state),
-          Divider(color: Colors.grey, thickness: 1.0),
-          _buildSectionTitle('커뮤니티'),
-          ..._buildCommunityMenuItems(context),
-          _buildSectionTitle('기타 설정'),
-          ..._buildSettingsMenuItems(context),
-        ],
-      ),
+    return Stack(
+      children: [
+        Visibility(
+            visible: state.isLoading == false,
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text('마이페이지'),
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.white,
+              ),
+              backgroundColor: Colors.white,
+              body: Column(
+                children: [
+                  _buildHeader(state),
+                  Divider(color: Colors.grey, thickness: 1.0),
+                  _buildSectionTitle('커뮤니티'),
+                  ..._buildCommunityMenuItems(
+                      context: context,
+                      onClickMyPost: () {
+
+                      },
+                      onClickSavaReport: () {
+
+                      }
+                  ),
+                  _buildSectionTitle('기타 설정'),
+                  ..._buildSettingsMenuItems(
+                      context: context,
+                      onClickLogout: () {},
+                      onClickDelete: () {
+                        context.read<MyBloc>().add(DeleteAccount());
+                      }
+                  ),
+                ],
+              ),
+            )
+        ),
+        _circularLoading(state: state)
+      ],
+    );
+  }
+
+  Widget _circularLoading({required MyState state}) {
+    return Visibility(
+        visible: state.isLoading == true,
+        child: const Center(child: CircularProgressIndicator(color: ColorDefines.mainColor,),)
     );
   }
 
   Widget _buildHeader(MyState state) {
-    final String nickname = state is MyProfile ? state.nick : "닉네임";
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -43,7 +99,7 @@ class MyPage extends BasePage<MyBloc, MyState> {
           ),
           const SizedBox(width: 16),
           Text(
-            nickname,
+            state.getUserInfoResponse?.data.nick ?? "",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ],
@@ -51,26 +107,30 @@ class MyPage extends BasePage<MyBloc, MyState> {
     );
   }
 
-  List<Widget> _buildCommunityMenuItems(BuildContext context) {
+  List<Widget> _buildCommunityMenuItems({
+    required BuildContext context,
+    required Function() onClickMyPost,
+    required Function() onClickSavaReport
+  }) {
     return [
       _buildMenuItem(
         iconPath: 'assets/images/ic_write.png',
         text: '작성한 글',
-        onTap: () {
-          // 보관함으로 이동
-        },
+        onTap: onClickMyPost
       ),
       _buildMenuItem(
         iconPath: 'assets/images/ic_folder.png',
         text: '저장된 리포트',
-        onTap: () {
-          // 리포트로 이동
-        },
+        onTap: onClickSavaReport
       ),
     ];
   }
 
-  List<Widget> _buildSettingsMenuItems(BuildContext context) {
+  List<Widget> _buildSettingsMenuItems({
+    required BuildContext context,
+    required Function() onClickLogout,
+    required Function() onClickDelete
+  }) {
     return [
     _buildMenuItem(
       iconPath: 'assets/images/ic_logout.png',
@@ -78,7 +138,12 @@ class MyPage extends BasePage<MyBloc, MyState> {
       onTap: () {
         showDialog(
           context: context,
-          builder: (BuildContext context) => buildLogoutConfirmationDialog(context),
+          builder: (BuildContext context) {
+            return buildLogoutConfirmationDialog(
+                context: context,
+                onClickLogout: onClickLogout
+            );
+          },
         );
       },
     ),
@@ -88,7 +153,12 @@ class MyPage extends BasePage<MyBloc, MyState> {
       onTap: () {
         showDialog(
           context: context,
-          builder: (BuildContext context) => buildDeleteAccountConfirmationDialog(context),
+          builder: (BuildContext context) {
+            return buildDeleteAccountConfirmationDialog(
+                context: context,
+                onClickDelete: onClickDelete
+            );
+          },
         );
         },
       ),
@@ -116,8 +186,5 @@ class MyPage extends BasePage<MyBloc, MyState> {
       ),
     );
   }
-
-  @override
-  MyBloc createBloc(BuildContext context) => MyBloc(MyInitial());
 
 }

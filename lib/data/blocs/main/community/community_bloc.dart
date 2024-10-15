@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/community/community_event.dart';
 import 'package:chuck2wiz/data/blocs/main/community/community_state.dart';
+import 'package:chuck2wiz/data/db/shared_preferences_helper.dart';
 import 'package:chuck2wiz/data/server/request/article/article_request.dart';
 
 class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
@@ -15,7 +16,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     emit(state.copyWith(isLoading: true));
     try {
       final page = event.page;
-      final response = await ArticleRequest().getArticles(page);
+      final userNum = await SharedPreferencesHelper.getUserNum();
+
+      if(userNum == null) {
+        throw Exception("userNum is NULL");
+      }
+
+      final response = await ArticleRequest().getArticles(page: page, userNum: userNum);
 
       emit(CommunityState(articleGetResponse: response));
     } catch(e) {

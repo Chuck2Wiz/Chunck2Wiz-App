@@ -1,41 +1,37 @@
+import 'package:chuck2wiz/data/server/response/auth/get_user_info_response.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class MyState extends Equatable {
-  const MyState();
+class MyState extends Equatable {
+  final bool? isLoading;
+  final GetUserInfoResponse? getUserInfoResponse;
+
+  const MyState({this.isLoading, this.getUserInfoResponse});
+
+  MyState copyWith({bool? isLoading, GetUserInfoResponse? getUserInfoResponse}) {
+    return MyState(
+      isLoading: isLoading ?? this.isLoading,
+      getUserInfoResponse: getUserInfoResponse ?? this.getUserInfoResponse
+    );
+  }
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [isLoading, getUserInfoResponse];
 }
 
 class MyInitial extends MyState {}
 
-class MyProfile extends MyState {
-  final String nick;
+class GetUserFailure extends MyState {
+  final dynamic error;
 
-  const MyProfile(this.nick);
-
-  @override
-  List<Object?> get props => [nick];
+  const GetUserFailure({super.isLoading, super.getUserInfoResponse, required this.error});
 }
 
-class MyWrittenPost extends MyState {
-  final List<String> posts;
-
-  const MyWrittenPost(this.posts);
-
-  @override
-  List<Object?> get props => [posts];
+class SuccessDelete extends MyState {
+  const SuccessDelete({super.isLoading, super.getUserInfoResponse});
 }
 
-class MySavedReport extends MyState {
-  final List<String> reports;
+class DeleteFailure extends MyState {
+  final dynamic error;
 
-  const MySavedReport(this.reports);
-
-  @override
-  List<Object?> get props => [reports];
+  const DeleteFailure({super.isLoading, super.getUserInfoResponse, required this.error});
 }
-
-class MyLogoutSuccess extends MyState {}
-
-class MyDeleteAccountSuccess extends MyState {}

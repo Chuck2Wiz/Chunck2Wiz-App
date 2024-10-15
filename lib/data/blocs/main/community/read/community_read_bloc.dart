@@ -27,7 +27,13 @@ class CommunityReadBloc extends Bloc<CommunityReadEvent, CommunityReadState> {
     
     try {
       final articleId = event.articleId;
-      final response = await articleRepository.readArticle(articleId);
+      final userNum = await SharedPreferencesHelper.getUserNum();
+
+      if(userNum == null) {
+        throw Exception("userNum is NULL");
+      }
+
+      final response = await articleRepository.readArticle(articleId: articleId, userNum: userNum);
 
       emit(state.copyWith(articleReadResponse: response));
     } catch (e) {

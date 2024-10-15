@@ -32,8 +32,8 @@ class ArticleRequest {
   /**
    * /:page
    * */
-  Future<ArticleGetResponse> getArticles(int page) async{
-    final url = Uri.parse('$BASE_URL/$page');
+  Future<ArticleGetResponse> getArticles({required int page, required String userNum}) async{
+    final url = Uri.parse('$BASE_URL/$page/$userNum');
 
     try {
       final response = await BaseHttp().get(url.toString());
@@ -48,8 +48,8 @@ class ArticleRequest {
   /**
    * /id/:articleId
    * */
-  Future<ArticleReadResponse> readArticle(String articleId) async{
-    final url = Uri.parse('$BASE_URL/id/$articleId');
+  Future<ArticleReadResponse> readArticle({required String articleId, required String userNum}) async{
+    final url = Uri.parse('$BASE_URL/id/$articleId/$userNum');
 
     try {
       final response = await BaseHttp().get(url.toString());

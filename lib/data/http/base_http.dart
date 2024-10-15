@@ -101,16 +101,17 @@ class BaseHttp {
     return result;
   }
 
-  Future<dynamic> delete(String url) async {
+  Future<dynamic> delete(String url, dynamic data) async {
 
     if (kDebugMode) {
       print( 'delete url: $url');
       print( 'delete headers: $headers');
     }
 
-    Http.Response response = await Http.get(
+    Http.Response response = await Http.delete(
         Uri.parse(url),
-        headers: headers
+        headers: headers,
+        body: data
     );
 
     final int statusCode = response.statusCode;

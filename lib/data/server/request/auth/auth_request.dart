@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:chuck2wiz/data/http/base_http.dart';
 import 'package:chuck2wiz/data/server/response/auth/check_nick_response.dart';
 import 'package:chuck2wiz/data/server/response/auth/check_user_response.dart';
+import 'package:chuck2wiz/data/server/response/auth/delete_user_response.dart';
 import 'package:chuck2wiz/data/server/response/auth/get_user_info_response.dart';
 import 'package:chuck2wiz/data/server/vo/auth/check_nick_vo.dart';
 import 'package:chuck2wiz/data/server/vo/auth/check_user_vo.dart';
@@ -82,4 +83,20 @@ class AuthRequest {
       rethrow;
     }
   }
+
+  Future<DeleteUserResponse> deleteUser(String userNum) async {
+    final url = Uri.parse('$BASE_URL/deleteUser');
+
+    try {
+      final response = await BaseHttp().delete(
+        url.toString(),
+        jsonEncode({'userNum': userNum})
+      );
+
+      return DeleteUserResponse.fromJson(jsonDecode(response));
+    } catch(e) {
+      rethrow;
+    }
+  }
+  
 }

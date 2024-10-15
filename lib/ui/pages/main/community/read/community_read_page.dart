@@ -33,7 +33,7 @@ class CommunityReadPage extends BasePage<CommunityReadBloc, CommunityReadState> 
   
   @override
   Widget buildContent(BuildContext context, CommunityReadState state) {
-    final List<Comment> comment = state.articleReadResponse?.data.comments ?? [];
+    final List<Comment> comment = state.articleReadResponse?.data?.comments ?? [];
 
     return Stack(
       children: [
@@ -137,7 +137,7 @@ class CommunityReadPage extends BasePage<CommunityReadBloc, CommunityReadState> 
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                data?.author.nick ?? "",
+                data?.author?.nick ?? "",
                 style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16
@@ -193,7 +193,7 @@ class CommunityReadPage extends BasePage<CommunityReadBloc, CommunityReadState> 
             children: [
               const Icon(Icons.account_circle_rounded, size: 28, color: ColorDefines.primaryGray,),
               const SizedBox(width: 8,),
-              Text(comment.author.nick, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)
+              Text(comment.author?.nick ?? "", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)
             ],
           ),
           const SizedBox(height: 2,),
@@ -205,7 +205,7 @@ class CommunityReadPage extends BasePage<CommunityReadBloc, CommunityReadState> 
   
   Widget _commentEmptyWidget({required CommunityReadState state}) {
     return Visibility(
-        visible: state.articleReadResponse?.data.comments.isEmpty ?? false,
+        visible: state.articleReadResponse?.data?.comments.isEmpty ?? false,
         child: const Center(
           child: Column(
             children: [

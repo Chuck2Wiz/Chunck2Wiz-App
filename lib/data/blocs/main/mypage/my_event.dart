@@ -7,12 +7,6 @@ abstract class MyEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadProfile extends MyEvent {}
-
-class LoadWrittenPosts extends MyEvent {}
-
-class LoadSavedReports extends MyEvent {}
-
-class Logout extends MyEvent {}
+class GetUserInfoEvent extends MyEvent {}
 
 class DeleteAccount extends MyEvent {}

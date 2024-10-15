@@ -5,6 +5,7 @@ import 'package:chuck2wiz/data/blocs/main/community/community_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/community/read/community_read_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/community/write/community_write_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/main_bloc.dart';
+import 'package:chuck2wiz/data/blocs/main/mypage/my_bloc.dart';
 import 'package:chuck2wiz/data/repository/ai/form_repository.dart';
 import 'package:chuck2wiz/data/repository/article/article_repository.dart';
 import 'package:chuck2wiz/ui/pages/login_page.dart';
@@ -100,6 +101,9 @@ class MyApp extends StatelessWidget {
               BlocProvider<CommunityWriteBloc>(
                 create: (context) => CommunityWriteBloc(UserRepository(), ArticleRepository()),
               ),
+              BlocProvider<MyBloc>(
+                  create: (context) => MyBloc(),
+              )
             ],
             child: const MainPage(),
           ),
