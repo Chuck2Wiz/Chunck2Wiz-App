@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:chuck2wiz/data/blocs/login/plat_form.dart';
-import 'package:chuck2wiz/data/repository/login_repository.dart';
+import 'package:chuck2wiz/data/repository/auth/login_repository.dart';
 import 'package:chuck2wiz/ui/define/color_defines.dart';
 import 'package:chuck2wiz/ui/util/base_page.dart';
 import 'package:chuck2wiz/ui/widget/sns_login_button_widget.dart';
@@ -23,9 +23,11 @@ class LoginPage extends BasePage<LoginBloc, LoginState> {
   }
 
   @override
+  bool get isSafeArea => false;
+
+  @override
   void onBlockListener(BuildContext context, LoginState state) {
     if (state is LoginSuccess) {
-      print("state: ${state.isInitUser}");
       if(state.isInitUser) {
         Get.toNamed('/signUp');
       } else {
@@ -42,29 +44,37 @@ class LoginPage extends BasePage<LoginBloc, LoginState> {
 
   @override
   Widget buildContent(BuildContext context, LoginState state) {
-    if (state is LoginLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(left: 24),
-              child: appTitleText(),
+    return Stack(
+      children: [
+        Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: 24),
+                  child: appTitleText(),
+                ),
+                const SizedBox(height: 48),
+                loginBannerImage(),
+                const SizedBox(height: 24),
+                snsLoginButtons(
+                        () => onClickNaverLogin(context),
+                        () => onClickKakaoLogin(context)
+                ),
+              ],
             ),
-            const SizedBox(height: 48),
-            loginBannerImage(),
-            const SizedBox(height: 24),
-            snsLoginButtons(
-                    () => onClickNaverLogin(context),
-                    () => onClickKakaoLogin(context)
-            ),
-          ],
+          ),
         ),
-      ),
+        _circularLoading(state: state)
+      ],
+    );
+  }
+
+  Widget _circularLoading({required LoginState state}) {
+    return Visibility(
+        visible: state.isLoading,
+        child: const Center(child: CircularProgressIndicator(color: ColorDefines.mainColor,),)
     );
   }
 

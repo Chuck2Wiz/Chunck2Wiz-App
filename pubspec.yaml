@@ -48,6 +48,7 @@ dependencies:
   http: ^1.2.2
   shared_preferences: ^2.0.8
   image_picker: ^1.1.2
+  timeago: ^3.3.0
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,7 @@ flutter:
     - assets/images/ic_delete_account.png
     - assets/images/ic_folder.png
     - assets/images/ic_write.png
+    - assets/images/ic_button_write.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

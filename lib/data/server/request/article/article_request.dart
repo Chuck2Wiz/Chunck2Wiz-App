@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:chuck2wiz/data/http/base_http.dart';
 import 'package:chuck2wiz/data/server/response/article/article_create_response.dart';
 import 'package:chuck2wiz/data/server/response/article/article_get_response.dart';
-import 'package:chuck2wiz/data/server/vo/article/ArticleCreateVo.dart';
+import 'package:chuck2wiz/data/server/response/article/article_read_response.dart';
+import 'package:chuck2wiz/data/server/vo/article/article_create_vo.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ArticleRequest {
@@ -38,6 +39,22 @@ class ArticleRequest {
       final response = await BaseHttp().get(url.toString());
 
       return ArticleGetResponse.fromJson(jsonDecode(response));
+    } catch(e) {
+      print('error: $e');
+      rethrow;
+    }
+  }
+
+  /**
+   * /id/:articleId
+   * */
+  Future<ArticleReadResponse> readArticle(String articleId) async{
+    final url = Uri.parse('$BASE_URL/id/$articleId');
+
+    try {
+      final response = await BaseHttp().get(url.toString());
+
+      return ArticleReadResponse.fromJson(jsonDecode(response));
     } catch(e) {
       print('error: $e');
       rethrow;

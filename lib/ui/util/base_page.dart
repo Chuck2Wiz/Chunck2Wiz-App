@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/blocs/main/main_state.dart';
 
 abstract class BasePage<B extends BlocBase<S>, S> extends StatelessWidget {
-  const BasePage({super.key});
+  final bool keepBlocAlive;
+
+  const BasePage({super.key, this.keepBlocAlive = false});
 
   // BlocProvider 생성 함수
   B createBloc(BuildContext context);
@@ -41,45 +45,86 @@ abstract class BasePage<B extends BlocBase<S>, S> extends StatelessWidget {
 
   /// 초기화를 위한 메서드
   @protected
-  void onInit(BuildContext context, B bloc) {
-    // 초기화에 필요한 Bloc 이벤트 추가
-  }
+  void onInit(BuildContext context, B bloc) {}
+
+  @protected
+  bool get isSafeArea => true;
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
 
-    final bloc = createBloc(context);
-
-    print("basePage State: ${bloc.state}");
-    // 초기화 수행
-    onInit(context, bloc);
-
-    return BlocProvider<B>(
-      create: (context) => bloc,
-      child: BlocListener<B, S>(
-        listener: (context, state) {
-          onBlockListener(context, state); // 상태 변화에 따른 로직 처리
+    return Scaffold(
+      appBar: null,
+      backgroundColor: Colors.white,
+      body: BlocProvider<B>(
+        create: (context) {
+          if (!keepBlocAlive) {
+            onInit(context, createBloc(context));
+            return createBloc(context);
+          } else {
+            onInit(context, context.read<B>());
+            return context.read<B>();
+          }
         },
-        child: Scaffold(
-          backgroundColor: backgroundColor,
-          bottomNavigationBar: BlocBuilder<B, S>(
-              builder: (context, state) {
-                int currentIndex = getSelectBottomNavIndex(state);
-                return buildBottomNavigationBar(context, currentIndex) ?? const SizedBox(height: 0,width: 0,);
-              }
-          ),
-          body: GestureDetector(
-            onTap: () {
-              FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기
+        child: BlocListener<B, S>(
+          listener: (context, state) {
+            onBlockListener(context, state); // 상태 변화에 따른 로직 처리
+          },
+          child: isSafeArea ? SafeArea(
+              child: Scaffold(
+                appBar: null,
+                backgroundColor: backgroundColor,
+                extendBodyBehindAppBar: false,
+                bottomNavigationBar: BlocBuilder<B, S>(
+                    builder: (context, state) {
+                      int currentIndex = getSelectBottomNavIndex(state);
+                      return buildBottomNavigationBar(context, currentIndex) ?? const SizedBox(height: 0,width: 0,);
+                    }
+                ),
+                body: GestureDetector(
+                  onTap: () {
+                    FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기
+                  },
+                  child: SafeArea(
+                    child: BlocBuilder<B, S>(
+                      builder: (context, state) {
+                        return buildContent(context, state); // 콘텐츠 빌드
+                      },
+                    ),
+                  ),
+                ),
+              )
+          ) : _rootScaffoldWidget()
+        ),
+      ),
+    );
+  }
+
+
+  /// 상단 앱 바 정의
+  @protected
+  PreferredSizeWidget? buildAppBar(BuildContext context) => null;
+
+  Widget _rootScaffoldWidget() {
+    return Scaffold(
+      appBar: null,
+      backgroundColor: backgroundColor,
+      extendBodyBehindAppBar: false,
+      bottomNavigationBar: BlocBuilder<B, S>(
+          builder: (context, state) {
+            int currentIndex = getSelectBottomNavIndex(state);
+            return buildBottomNavigationBar(context, currentIndex) ?? const SizedBox(height: 0,width: 0,);
+          }
+      ),
+      body: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기
+        },
+        child: SafeArea(
+          child: BlocBuilder<B, S>(
+            builder: (context, state) {
+              return buildContent(context, state); // 콘텐츠 빌드
             },
-            child: SafeArea(
-              child: BlocBuilder<B, S>(
-                builder: (context, state) {
-                  return buildContent(context, state); // 콘텐츠 빌드
-                },
-              ),
-            ),
           ),
         ),
       ),

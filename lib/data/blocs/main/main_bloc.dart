@@ -8,7 +8,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   void _onChangedBottomNavIndex(ChangedBottomNavIndex event, Emitter<MainState> emit) {
-    print("MainBloc: emit state");
     emit(BottomNavIndex(bottomNavIndex: event.bottomNavIndex));
   }
 }

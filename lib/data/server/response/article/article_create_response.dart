@@ -1,9 +1,10 @@
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 class ArticleCreateResponse {
   bool success;
   String message;
-  dynamic data;
+  Data data;
 
   ArticleCreateResponse({
     required this.success,
@@ -18,12 +19,26 @@ class ArticleCreateResponse {
   factory ArticleCreateResponse.fromJson(Map<String, dynamic> json) => ArticleCreateResponse(
     success: json["success"],
     message: json["message"],
-    data: json["data"],
+    data: Data.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "data": data,
+    "data": data.toJson(),
+  };
+}
+
+class Data {
+  Data();
+
+  factory Data.fromRawJson(String str) => Data.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  );
+
+  Map<String, dynamic> toJson() => {
   };
 }

@@ -81,9 +81,9 @@ class _BottomNavigationWidget extends State<BottomNavigationWidget> {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.15),
-                  offset: const Offset(0, 3),
-                  blurRadius: 4,
-                  spreadRadius: 4
+                  offset: const Offset(0, -10),
+                  blurRadius: 15,
+                  spreadRadius: -5
                 )
               ]
             ),
@@ -120,7 +120,9 @@ class _BottomNavigationWidget extends State<BottomNavigationWidget> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              _selectedItemIndex = index;
+                              if(index != 1) {
+                                _selectedItemIndex = index;
+                              }
                             });
                             widget.onClickItem(item);
                           },

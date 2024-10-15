@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:chuck2wiz/data/blocs/login/login_event.dart';
 import 'package:chuck2wiz/data/blocs/login/login_state.dart';
 import 'package:chuck2wiz/data/db/shared_preferences_helper.dart';
-import 'package:chuck2wiz/data/repository/login_repository.dart';
+import 'package:chuck2wiz/data/repository/auth/login_repository.dart';
 import 'package:chuck2wiz/data/server/request/auth/auth_request.dart';
 import 'package:chuck2wiz/data/server/vo/auth/check_user_vo.dart';
 import 'package:flutter/services.dart';
@@ -19,23 +19,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> _onLoginNaver(LoginWithNaver event, Emitter<LoginState> emit) async {
     emit(LoginInitial());
+    emit(state.copyWith(isLoading: true));
     try {
       final NaverLoginResult res = await FlutterNaverLogin.logIn();
-      await SharedPreferencesHelper.saveUserNum(res.account.id);
 
       final bool isExistUser = await checkExistUser(userNum: res.account.id);
-      print("naver login: $isExistUser");
 
+      await SharedPreferencesHelper.saveUserNum(res.account.id);
       emit(LoginSuccess(isInitUser: !isExistUser));
     } catch (error) {
       emit(LoginFailure(error: error.toString()));
     } finally {
+      emit(state.copyWith(isLoading: false));
       emit(LoginInitial());
     }
   }
 
   Future<void> _onLoginKakao(LoginWithKakao event, Emitter<LoginState> emit) async {
     emit(LoginInitial());
+    emit(state.copyWith(isLoading: true));
     try {
       if (await isKakaoTalkInstalled()) {
         try {
@@ -78,15 +80,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } catch (error) {
       emit(LoginFailure(error: '카카오톡 설치 여부 확인 실패: $error'));
     } finally {
+      emit(state.copyWith(isLoading: false));
       emit(LoginInitial());
     }
   }
 
   Future<bool> checkExistUser({required String userNum}) async {
-    print("checkExistUser: $userNum");
     final response = await AuthRequest().checkUser(CheckUserVo(userNum: userNum));
 
-    print("checkExistUser: ${response}");
     if (response.success) {
       return response.data.response.exists;
     } else {
