@@ -47,6 +47,7 @@ dependencies:
   flutter_naver_login: ^1.8.0
   http: ^0.13.5
   shared_preferences: ^2.0.8
+  timeago: ^3.3.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,7 @@ flutter:
     - assets/images/ic_bottom_community_deactivate.png
     - assets/images/ic_bottom_home_active.png
     - assets/images/ic_bottom_home_deactivate.png
+    - assets/images/ic_button_write.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -14,6 +14,11 @@ class SharedPreferencesHelper {
     await prefs.setString('userNum', userNum);
   }
 
+  static Future<void> saveNick(String nick) async {
+    final prefs = await getInstance();
+    await prefs.setString('nick', nick);
+  }
+
   static Future<void> saveToken(String token) async {
     final prefs = await getInstance();
     await prefs.setString('token', token);
@@ -23,5 +28,11 @@ class SharedPreferencesHelper {
     final prefs = await getInstance();
 
     return prefs.getString('userNum');
+  }
+
+  static Future<String?> getNick() async {
+    final prefs = await getInstance();
+
+    return prefs.getString('nick');
   }
 }

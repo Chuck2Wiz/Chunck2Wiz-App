@@ -6,19 +6,31 @@ import 'package:chuck2wiz/data/server/request/article/article_request.dart';
 class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   CommunityBloc() : super(CommunityInitial()) {
     on<GetArticles>(_onGetArticles);
+    on<RefreshArticle>(_onRefreshArticles);
+    on<ClickArticle>(_onClickArticle);
   }
 
   Future<void> _onGetArticles(GetArticles event, Emitter<CommunityState> emit) async {
-    emit(CommunityLoading());
+    emit(CommunityInitial());
+    emit(state.copyWith(isLoading: true));
     try {
       final page = event.page;
       final response = await ArticleRequest().getArticles(page);
 
       emit(CommunityState(articleGetResponse: response));
     } catch(e) {
-      print("communityBloc getArticles Error: $e");
       emit(CommunityFailure(error: e));
+    } finally {
+      emit(state.copyWith(isLoading: false));
     }
+  }
+
+  void _onRefreshArticles(RefreshArticle event, Emitter<CommunityState> emit) {
+    emit(CommunityRefresh());
+  }
+
+  void _onClickArticle(ClickArticle event, Emitter<CommunityState> emit) {
+    emit(state.copyWith(clickArticleId: event.articleId));
   }
 
 }

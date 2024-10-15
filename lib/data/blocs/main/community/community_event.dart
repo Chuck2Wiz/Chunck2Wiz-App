@@ -21,3 +21,5 @@ class ClickArticle extends CommunityEvent {
 
   const ClickArticle({required this.articleId});
 }
+
+class RefreshArticle extends CommunityEvent {}
