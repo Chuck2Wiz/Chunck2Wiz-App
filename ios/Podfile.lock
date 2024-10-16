@@ -4,12 +4,12 @@ PODS:
     - Flutter
   - flutter_naver_login (0.0.1):
     - Flutter
-    - naveridlogin-sdk-ios (~> 4.2.3)
+    - naveridlogin-sdk-ios (~> 4.1.0)
   - image_picker_ios (0.0.1):
     - Flutter
   - kakao_flutter_sdk_common (1.9.6):
     - Flutter
-  - naveridlogin-sdk-ios (4.2.3)
+  - naveridlogin-sdk-ios (4.1.6)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -49,13 +49,13 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_config: f48f0d47a284f1791aacce2687eabb3309ba7a41
-  flutter_naver_login: 7e0f992a5f9c39345e9602b42fd2400e95355651
+  flutter_naver_login: 1dbf6d21aae5235cdf76a28ac79cf6871899282f
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   kakao_flutter_sdk_common: 4f10f98226da5d0f7cbdeeaed5cc21f144515209
-  naveridlogin-sdk-ios: d9d46d02119d303023d7000cd5963864d5bb89e5
+  naveridlogin-sdk-ios: cdd34e3585a3d5aaf37c1d84c1f41faba4a25d1a
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   webview_flutter_wkwebview: 0982481e3d9c78fd5c6f62a002fcd24fc791f1e4
 
-PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+PODFILE CHECKSUM: 1c4e050432e1ee7046e6ea201b427ee7b783a820
 
 COCOAPODS: 1.15.2

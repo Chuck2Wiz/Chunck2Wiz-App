@@ -82,24 +82,25 @@ class AiPage extends BasePage<AiBloc, AiState> {
             ),
             GestureDetector(
               onTap: () {
-                final aiFormBloc = AiFormBloc(FormRepository());
-                Navigator.push(context, PageRouteBuilder(
-                    pageBuilder: (newContext, animation, secondaryAnimation) {
-
-                    aiFormBloc.add(AiFormSelectOptionEvent(selectOption: state.selectOption ?? ""));
-                    return BlocProvider.value(
-                        value: aiFormBloc,
-                        child: const AiFormPage()
-                    );
-                }));
+                if(state.selectOption != null && state.selectOption != "") {
+                  final aiFormBloc = AiFormBloc(FormRepository());
+                  Navigator.push(context, PageRouteBuilder(
+                      pageBuilder: (newContext, animation, secondaryAnimation) {
+                        aiFormBloc.add(AiFormSelectOptionEvent(selectOption: state.selectOption ?? ""));
+                        return BlocProvider.value(
+                            value: aiFormBloc,
+                            child: const AiFormPage()
+                        );
+                      }));
+                }
               },
               child: Container(
                   width: double.infinity,
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
-                    color: ColorDefines.mainColor,
+                    color: state.selectOption == null ? ColorDefines.primaryGray : ColorDefines.mainColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Align(

@@ -72,7 +72,7 @@ class AiFormPage extends BasePage<AiFormBloc, AiFormState> {
               child: Container(
                   width: double.infinity,
                   margin:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
                     color: ColorDefines.mainColor,

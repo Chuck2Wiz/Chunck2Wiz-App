@@ -35,6 +35,8 @@ void main() async {
     javaScriptAppKey: dotenv.env['KAKAO_JAVA_SCRIPT_KEY'],
   );
 
+  HttpOverrides.global = NoCheckCertificateHttpOverrides(); // 생성된 HttpOverrides 객체 등록
+
   SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
       overlays: [
@@ -110,5 +112,13 @@ class MyApp extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+// https 인증서 무시.
+class NoCheckCertificateHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
