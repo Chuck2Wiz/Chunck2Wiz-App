@@ -7,6 +7,7 @@ class BaseTextFieldWidget extends StatelessWidget {
   final TextStyle? textStyle;
   final TextStyle? hintTextStyle;
   final String hint;
+  final String initialText;
   final TextEditingController? textEditingController;
 
   const BaseTextFieldWidget({
@@ -14,6 +15,7 @@ class BaseTextFieldWidget extends StatelessWidget {
     this.textStyle,
     this.hintTextStyle,
     this.textEditingController,
+    this.initialText = "",
     required this.hint,
     required this.onChange,
   });
@@ -35,6 +37,7 @@ class BaseTextFieldWidget extends StatelessWidget {
           hoverColor: Colors.black),
       controller: textEditingController,
       onChanged: onChange,
+      initialValue: initialText,
       cursorColor: Colors.black,
       style: textStyle,
       maxLines: null,

@@ -89,7 +89,7 @@ class AiPage extends BasePage<AiBloc, AiState> {
                         aiFormBloc.add(AiFormSelectOptionEvent(selectOption: state.selectOption ?? ""));
                         return BlocProvider.value(
                             value: aiFormBloc,
-                            child: const AiFormPage()
+                            child: AiFormPage()
                         );
                       }));
                 }

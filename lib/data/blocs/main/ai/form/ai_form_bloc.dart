@@ -10,7 +10,7 @@ class AiFormBloc extends Bloc<AiFormEvent, AiFormState>{
   AiFormBloc(this.formRepository): super(AiFormInitial()) {
     on<AiFormSelectOptionEvent>(_onSelectFormOption);
     on<GetAiFormDataEvent>(_onGetAiFormData);
-    on<QuestionValueChangeEvent>(_onQuestionChange);
+    on<AnswerNextEvent>(_onAnswerNext);
   }
 
   Future<void> _onSelectFormOption(AiFormSelectOptionEvent event, Emitter<AiFormState> emit) async {
@@ -26,9 +26,10 @@ class AiFormBloc extends Bloc<AiFormEvent, AiFormState>{
       }
 
       final response = await formRepository.searchForm(state.selectOption!);
+      final answerData = List<String>.filled(response.data.length, '');
 
       if(response.success) {
-        emit(state.copyWith(formData: response.data));
+        emit(state.copyWith(formData: response.data, answerData: answerData));
       } else {
         throw Exception(response.message);
       }
@@ -39,7 +40,15 @@ class AiFormBloc extends Bloc<AiFormEvent, AiFormState>{
     }
   }
 
-  Future<void> _onQuestionChange(QuestionValueChangeEvent event, Emitter<AiFormState> emit) async {
-    emit(state.copyWith(questionValue: event.questionValue));
+  Future<void> _onAnswerNext(AnswerNextEvent event, Emitter<AiFormState> emit) async {
+    emit(state.copyWith(isLoading: true));
+
+    try {
+      emit(AiFormSuccess());
+    }catch(e) {
+      emit(AiFormFailure());
+    } finally {
+      emit(state.copyWith(isLoading: false));
+    }
   }
 }

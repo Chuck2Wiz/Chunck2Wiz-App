@@ -4,6 +4,10 @@ import 'package:chuck2wiz/data/blocs/main/ai/ai_state.dart';
 import 'package:chuck2wiz/data/blocs/main/ai/form/ai_form_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/ai/form/ai_form_event.dart';
 import 'package:chuck2wiz/data/blocs/main/ai/form/ai_form_state.dart';
+import 'package:chuck2wiz/data/blocs/main/ai/report/ai_report_bloc.dart';
+import 'package:chuck2wiz/data/blocs/main/ai/report/ai_report_event.dart';
+import 'package:chuck2wiz/data/db/shared_preferences_helper.dart';
+import 'package:chuck2wiz/ui/pages/main/ai/ai_report_page.dart';
 import 'package:chuck2wiz/ui/util/base_page.dart';
 import 'package:chuck2wiz/ui/widget/textField/base_text_field_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,7 +19,7 @@ import '../../../define/color_defines.dart';
 import '../../../define/font_defines.dart';
 
 class AiFormPage extends BasePage<AiFormBloc, AiFormState> {
-  const AiFormPage({super.key}): super(keepBlocAlive: true);
+  AiFormPage({super.key}): super(keepBlocAlive: true);
 
   @override
   AiFormBloc createBloc(BuildContext context) => context.read<AiFormBloc>();
@@ -26,6 +30,8 @@ class AiFormPage extends BasePage<AiFormBloc, AiFormState> {
       bloc.add(GetAiFormDataEvent());
     }
   }
+
+  List<String>? answerData;
 
   @override
   Widget buildContent(BuildContext context, AiFormState state) {
@@ -58,16 +64,29 @@ class AiFormPage extends BasePage<AiFormBloc, AiFormState> {
             Expanded(
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    child: _formWidget(
-                        state: state,
-                        onChange: (value) {
-                          context.read<AiFormBloc>().add(QuestionValueChangeEvent(questionValue: value));
-                        }
-                    ),
+                    child: _formWidget(state: state),
                 )
             ),
             GestureDetector(
               onTap: () {
+                print("탭전 상태: ${state}");
+                SharedPreferencesHelper.saveAnswerData(answerData ?? []);
+
+                final reportBloc = AiReportBloc();
+                reportBloc.add(GetInitData(
+                    formData: state.formData,
+                    selectOption: state.selectOption
+                ));
+
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (newContext) => BlocProvider.value(
+                          value: reportBloc,
+                          child: AiReportPage(),
+                        )
+                    )
+                );
               },
               child: Container(
                   width: double.infinity,
@@ -130,8 +149,9 @@ class AiFormPage extends BasePage<AiFormBloc, AiFormState> {
     return result;
   }
 
-  Widget _formWidget({required AiFormState state, required Function(String) onChange}) {
+  Widget _formWidget({required AiFormState state}) {
     final formData = state.formData?[0].questions ?? [];
+    answerData = List<String>.filled(formData.length, '');
 
     return ListView.builder(
         itemCount: formData.length,
@@ -158,7 +178,9 @@ class AiFormPage extends BasePage<AiFormBloc, AiFormState> {
                 ),
                 child: BaseTextFieldWidget(
                     hint: "내용을 입력해주세요.",
-                    onChange: onChange
+                    onChange: (value) {
+                      answerData?[index] = value;
+                    },
                 ),
               ),
               if(index != formData.length-1)

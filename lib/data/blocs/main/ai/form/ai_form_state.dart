@@ -6,21 +6,19 @@ class AiFormState extends Equatable {
   final bool isLoading;
   final String? selectOption;
   final List<FormData>? formData;
-  final String? questionValue;
 
-  const AiFormState({this.isLoading = false, this.selectOption, this.formData, this.questionValue});
+  const AiFormState({this.isLoading = false, this.selectOption, this.formData});
 
   AiFormState copyWith({
     bool? isLoading,
     String? selectOption,
     List<FormData>? formData,
-    String? questionValue
+    List<String>? answerData
   }) {
     return AiFormState(
       isLoading: isLoading ?? this.isLoading,
       selectOption: selectOption ?? this.selectOption,
       formData: formData ?? this.formData,
-      questionValue: questionValue ?? this.questionValue
     );
   }
 
@@ -28,10 +26,16 @@ class AiFormState extends Equatable {
   List<Object?> get props => [isLoading, formData, selectOption];
 }
 
-class AiFormInitial extends AiFormState {}
+class AiFormInitial extends AiFormState {
+  const AiFormInitial({super.isLoading, super.formData, super.selectOption});
+}
 
 class AiFormFailure extends AiFormState {
   final dynamic error;
 
-  const AiFormFailure({super.isLoading, super.formData, this.error});
+  const AiFormFailure({super.isLoading, super.formData, super.selectOption, this.error});
+}
+
+class AiFormSuccess extends AiFormState {
+  const AiFormSuccess({super.isLoading, super.formData, super.selectOption});
 }

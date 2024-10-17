@@ -15,8 +15,4 @@ class AiFormSelectOptionEvent extends AiFormEvent {
   const AiFormSelectOptionEvent({required this.selectOption});
 }
 
-class QuestionValueChangeEvent extends AiFormEvent {
-  final String questionValue;
-
-  const QuestionValueChangeEvent({required this.questionValue});
-}
+class AnswerNextEvent extends AiFormEvent {}
