@@ -11,6 +11,7 @@ class AiFormBloc extends Bloc<AiFormEvent, AiFormState>{
     on<AiFormSelectOptionEvent>(_onSelectFormOption);
     on<GetAiFormDataEvent>(_onGetAiFormData);
     on<AnswerNextEvent>(_onAnswerNext);
+    on<CheckAnswerValidationEvent>(_onCheckAnswerValidation);
   }
 
   Future<void> _onSelectFormOption(AiFormSelectOptionEvent event, Emitter<AiFormState> emit) async {
@@ -50,5 +51,9 @@ class AiFormBloc extends Bloc<AiFormEvent, AiFormState>{
     } finally {
       emit(state.copyWith(isLoading: false));
     }
+  }
+
+  Future<void> _onCheckAnswerValidation(CheckAnswerValidationEvent event, Emitter<AiFormState> emit) async {
+    emit(state.copyWith(isCompleteAnswer: event.isValid));
   }
 }

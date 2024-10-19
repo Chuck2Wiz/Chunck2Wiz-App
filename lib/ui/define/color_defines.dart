@@ -12,4 +12,5 @@ class ColorDefines {
   static const Color bgLight = Color(0xffffffff);
   static const Color successGreen = Color(0xff227909);
   static const Color failRed = Color(0xffff0000);
+  static const Color darkGray = Color(0xff7a7a7a);
 }

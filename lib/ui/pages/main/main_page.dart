@@ -11,11 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-
-import '../../../data/blocs/main/community/community_bloc.dart';
-import '../../../data/blocs/main/community/community_event.dart';
 import '../../../data/blocs/main/main_event.dart';
 import '../../widget/bottomBar/bottom_navigation_widget.dart';
 
@@ -58,7 +53,6 @@ class MainPage extends BasePage<MainBloc, MainState> {
               PageRouteBuilder(
                 pageBuilder: (newContext, animation, secondaryAnimation) {
                   final aiBloc = AiBloc(FormRepository());
-
                   return BlocProvider.value(
                       value: aiBloc,
                       child: const AiPage()

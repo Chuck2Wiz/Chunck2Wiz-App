@@ -19,3 +19,16 @@ class GetInitData extends AiReportEvent {
   List<Object?> get props => [selectOption, formData];
 }
 
+class AiStreamAnswerData extends AiReportEvent {
+  final String question;
+
+  const AiStreamAnswerData({required this.question});
+}
+
+class QuestionEvent extends AiReportEvent {
+  final String question;
+
+  const QuestionEvent({required this.question});
+}
+
+

@@ -16,3 +16,9 @@ class AiFormSelectOptionEvent extends AiFormEvent {
 }
 
 class AnswerNextEvent extends AiFormEvent {}
+
+class CheckAnswerValidationEvent extends AiFormEvent {
+  final bool isValid;
+
+  const CheckAnswerValidationEvent({required this.isValid});
+}
