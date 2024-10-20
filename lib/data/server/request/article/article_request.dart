@@ -4,6 +4,7 @@ import 'package:chuck2wiz/data/http/base_http.dart';
 import 'package:chuck2wiz/data/server/response/article/article_create_response.dart';
 import 'package:chuck2wiz/data/server/response/article/article_get_response.dart';
 import 'package:chuck2wiz/data/server/response/article/article_read_response.dart';
+import 'package:chuck2wiz/data/server/response/article/my_articles_response.dart';
 import 'package:chuck2wiz/data/server/vo/article/article_create_vo.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -57,6 +58,22 @@ class ArticleRequest {
       return ArticleReadResponse.fromJson(jsonDecode(response));
     } catch(e) {
       print('error: $e');
+      rethrow;
+    }
+  }
+
+/**
+ * /my/:page/:userNum
+ */
+  Future<MyArticlesResponse> getMyArticles({required int page, required String userNum}) async{
+    final url = Uri.parse('$BASE_URL/my/$page/$userNum');
+
+    try {
+      final response = await BaseHttp().get(url.toString());
+
+      return MyArticlesResponse.fromJson(jsonDecode(response));
+    } catch(e) {
+      print('erro: $e');
       rethrow;
     }
   }

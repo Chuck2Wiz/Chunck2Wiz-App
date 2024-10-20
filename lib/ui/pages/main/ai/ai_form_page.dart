@@ -7,6 +7,7 @@ import 'package:chuck2wiz/data/blocs/main/ai/form/ai_form_state.dart';
 import 'package:chuck2wiz/data/blocs/main/ai/report/ai_report_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/ai/report/ai_report_event.dart';
 import 'package:chuck2wiz/data/db/shared_preferences_helper.dart';
+import 'package:chuck2wiz/data/repository/aiReport/ai_report_repository.dart';
 import 'package:chuck2wiz/ui/define/format_defines.dart';
 import 'package:chuck2wiz/ui/pages/main/ai/ai_report_page.dart';
 import 'package:chuck2wiz/ui/util/base_page.dart';
@@ -80,13 +81,13 @@ class AiFormPage extends BasePage<AiFormBloc, AiFormState> {
                 if(state.isCompleteAnswer) {
                   SharedPreferencesHelper.saveAnswerData(answerData ?? []);
 
-                  final reportBloc = AiReportBloc();
+                  final reportBloc = AiReportBloc(AiReportRepository());
                   reportBloc.add(GetInitData(
                       formData: state.formData,
                       selectOption: state.selectOption
                   ));
 
-                  Navigator.push(
+                  Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (newContext) => BlocProvider.value(

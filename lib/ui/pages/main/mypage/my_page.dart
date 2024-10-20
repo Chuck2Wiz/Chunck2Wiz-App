@@ -1,13 +1,20 @@
+import 'package:chuck2wiz/data/blocs/main/mypage/aiReport/my_ai_report_bloc.dart';
+import 'package:chuck2wiz/data/blocs/main/mypage/myArticles/my_articles_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/mypage/my_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/mypage/my_event.dart';
 import 'package:chuck2wiz/data/blocs/main/mypage/my_state.dart';
+import 'package:chuck2wiz/data/repository/aiReport/ai_report_repository.dart';
+import 'package:chuck2wiz/data/repository/article/article_repository.dart';
 import 'package:chuck2wiz/ui/define/color_defines.dart';
 import 'package:chuck2wiz/ui/pages/login_page.dart';
+import 'package:chuck2wiz/ui/pages/main/mypage/aiReport/my_ai_report_page.dart';
 import 'package:chuck2wiz/ui/util/base_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chuck2wiz/ui/widget/set_account_dialog_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'articles/my_articles_page.dart';
 
 class MyPage extends BasePage<MyBloc, MyState> {
   const MyPage({super.key}): super(keepBlocAlive: true);
@@ -57,16 +64,41 @@ class MyPage extends BasePage<MyBloc, MyState> {
                   ..._buildCommunityMenuItems(
                       context: context,
                       onClickMyPost: () {
+                        final myArticlesBloc = MyArticlesBloc(ArticleRepository());
 
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (newContext) => BlocProvider.value(
+                                  value: myArticlesBloc,
+                                  child: MyArticlesPage(),
+                                )
+                            )
+                        );
                       },
                       onClickSavaReport: () {
+                        final myAiReportBloc = MyAiReportBloc(AiReportRepository());
 
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (newContext) => BlocProvider.value(
+                                  value: myAiReportBloc,
+                                  child: MyAiReportPage(),
+                                )
+                            )
+                        );
                       }
                   ),
                   _buildSectionTitle('기타 설정'),
                   ..._buildSettingsMenuItems(
                       context: context,
-                      onClickLogout: () {},
+                      onClickLogout: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                      },
                       onClickDelete: () {
                         context.read<MyBloc>().add(DeleteAccount());
                       }

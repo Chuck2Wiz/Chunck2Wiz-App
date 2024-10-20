@@ -31,4 +31,10 @@ class QuestionEvent extends AiReportEvent {
   const QuestionEvent({required this.question});
 }
 
+class SaveAiReportEvent extends AiReportEvent {
+  final String aiAnswer;
+
+  const SaveAiReportEvent({required this.aiAnswer});
+}
+
 

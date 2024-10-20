@@ -84,7 +84,7 @@ class AiPage extends BasePage<AiBloc, AiState> {
               onTap: () {
                 if(state.selectOption != null && state.selectOption != "") {
                   final aiFormBloc = AiFormBloc(FormRepository());
-                  Navigator.push(context, PageRouteBuilder(
+                  Navigator.pushReplacement(context, PageRouteBuilder(
                       pageBuilder: (newContext, animation, secondaryAnimation) {
                         aiFormBloc.add(AiFormSelectOptionEvent(selectOption: state.selectOption ?? ""));
                         return BlocProvider.value(

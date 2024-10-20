@@ -4,9 +4,11 @@ import 'package:chuck2wiz/data/blocs/main/ai/ai_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/community/community_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/community/read/community_read_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/community/write/community_write_bloc.dart';
+import 'package:chuck2wiz/data/blocs/main/home/home_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/main_bloc.dart';
 import 'package:chuck2wiz/data/blocs/main/mypage/my_bloc.dart';
 import 'package:chuck2wiz/data/repository/ai/form_repository.dart';
+import 'package:chuck2wiz/data/repository/aiReport/ai_report_repository.dart';
 import 'package:chuck2wiz/data/repository/article/article_repository.dart';
 import 'package:chuck2wiz/ui/pages/login_page.dart';
 import 'package:chuck2wiz/ui/pages/main/community/write/community_write_page.dart';
@@ -96,6 +98,9 @@ class MyApp extends StatelessWidget {
             providers: [
               BlocProvider<MainBloc>(
                 create: (context) => MainBloc(),
+              ),
+              BlocProvider<HomeBloc>(
+                  create: (context) => HomeBloc(AiReportRepository(), ArticleRepository())
               ),
               BlocProvider<CommunityBloc>(
                 create: (context) => CommunityBloc(),

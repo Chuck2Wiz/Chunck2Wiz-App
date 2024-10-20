@@ -26,6 +26,25 @@ class AiReportPage extends BasePage<AiReportBloc, AiReportState> {
   }
 
   @override
+  void onBlockListener(BuildContext context, AiReportState state) {
+    if(state is SaveAiReportSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("레포트 저장을 성공했습니다!\n(마이페이지에서 확인 가능)"),
+        ),
+      );
+    }
+
+    if(state is SaveAiReportFailure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("레포트 저장을 실패했습니다.\n(${state.error})"),
+        ),
+      );
+    }
+  }
+
+  @override
   void onInit(BuildContext context, AiReportBloc bloc) {
     final answerData = bloc.state.answerData;
     final formData = bloc.state.formData![0].questions;
@@ -46,98 +65,107 @@ class AiReportPage extends BasePage<AiReportBloc, AiReportState> {
     if (state.isQuestion) {
       textEditingController.clear();
     }
-    return Column(
+    return Stack(
       children: [
-        /// Title
-        _aiReportTitleWidget(onClickBack: () {
-          Navigator.pop(context);
-        }),
-        const SizedBox(
-          height: 10,
-        ),
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                /// Chat List
-                Flexible(
-                  child: Visibility(
-                    visible: (state.chatList != null && !state.isRequest) ||
-                        state.isQuestion,
-                    child: _chatBubbleWidget(state: state),
-                  ),
-                ),
-
-                /// Streaming 형태로 오는 Chat (응답이 끝나면 사라진다)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Stack(
+        Column(
+          children: [
+            /// Title
+            _aiReportTitleWidget(onClickBack: () {
+              Navigator.pop(context);
+            }),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
+                      /// Chat List
                       Visibility(
-                        visible: state.isChatLoading && state.isRequest,
-                        child: _chatBubble(
-                            textWidget: AiLoadingTextWidget(
-                              selectOptions: FormatDefines.formOptionFormat(
-                                option: state.selectOption ?? "",
+                        visible: (state.chatList != null && !state.isRequest) ||
+                            state.isQuestion,
+                        child: _chatBubbleWidget(state: state),
+                      ),
+                      /// Streaming 형태로 오는 Chat (응답이 끝나면 사라진다)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Stack(
+                          children: [
+                            Visibility(
+                              visible: state.isChatLoading && state.isRequest,
+                              child: _chatBubble(
+                                  textWidget: AiLoadingTextWidget(
+                                    selectOptions: FormatDefines.formOptionFormat(
+                                      option: state.selectOption ?? "",
+                                    ),
+                                  ),
+                                  isMy: false,
+                                  isFirst: false),
+                            ),
+                            Visibility(
+                              visible: !state.isChatLoading && state.isRequest,
+                              child: _chatBubble(
+                                textWidget: Text(
+                                  state.aiAnswer,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                isMy: false,
+                                isFirst: false,
                               ),
                             ),
-                            isMy: false,
-                            isFirst: false),
-                      ),
-                      Visibility(
-                        visible: !state.isChatLoading && state.isRequest,
-                        child: _chatBubble(
-                          textWidget: Text(
-                            state.aiAnswer,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
-                          isMy: false,
-                          isFirst: false,
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
 
-        /// 질문 버튼
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: _sendQuestionWidget(
-              state: state,
-              onChange: (value) {
-                textEditingController.text = value;
-              },
-              onClickSend: () {
-                if (textEditingController.text.isNotEmpty) {
-                  context
-                      .read<AiReportBloc>()
-                      .add(QuestionEvent(question: textEditingController.text));
-                  Future.delayed(Duration(milliseconds: 100), () {
-                    _scrollController
-                        .jumpTo(_scrollController.position.maxScrollExtent);
-                  });
-                }
-              },
-            onClickBox: () {
-              if(!state.isRequest) {
-                Future.delayed(Duration(milliseconds: 100), () {
-                  _scrollController
-                      .jumpTo(_scrollController.position.maxScrollExtent);
-                });
-              }
-            }
-          ),
-        )
+            /// 질문 버튼
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _sendQuestionWidget(
+                  state: state,
+                  onChange: (value) {
+                    textEditingController.text = value;
+                  },
+                  onClickSend: () {
+                    if (textEditingController.text.isNotEmpty) {
+                      context
+                          .read<AiReportBloc>()
+                          .add(QuestionEvent(question: textEditingController.text));
+                      context.read<AiReportBloc>().add(AiStreamAnswerData(question: textEditingController.text));
+                      _scrollJumpToDown();
+                    }
+                  },
+                  onClickBox: () {
+                    if(!state.isRequest) {
+                      _scrollJumpToDown();
+                    }
+                  }
+              ),
+            )
+          ],
+        ),
+        _circularLoading(state: state)
       ],
     );
+  }
+
+  Widget _circularLoading({required AiReportState state}) {
+    return Visibility(
+        visible: state.isLoading,
+        child: const Center(
+          child: CircularProgressIndicator(
+            color: ColorDefines.mainColor,
+          ),
+        ));
   }
 
   Widget _aiReportTitleWidget({required Function() onClickBack}) {
@@ -219,10 +247,13 @@ class AiReportPage extends BasePage<AiReportBloc, AiReportState> {
     return ListView.builder(
       itemCount: state.chatList!.length,
       controller: _scrollController,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final TextStyle textStyle = state.chatList![index].isMy
             ? TextStyle(color: Colors.white, fontSize: 16)
             : TextStyle(color: Colors.black, fontSize: 16);
+        _scrollJumpToDown();
 
         return Align(
             alignment: state.chatList![index].isMy
@@ -234,7 +265,20 @@ class AiReportPage extends BasePage<AiReportBloc, AiReportState> {
                   style: textStyle,
                 ),
                 isMy: state.chatList![index].isMy,
-                isFirst: index == 0));
+                isFirst: index == 0,
+                onClickSaveReport: () {
+                  if(state.isSaveReport == false) {
+                    context.read<AiReportBloc>().add(SaveAiReportEvent(aiAnswer: state.chatList![0].content));
+                  }
+                  if(state.isSaveReport == true) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("이미 레포트 저장을 했습니다."),
+                      ),
+                    );
+                  }
+                }
+            ));
       },
     );
   }
@@ -243,6 +287,7 @@ class AiReportPage extends BasePage<AiReportBloc, AiReportState> {
     required Widget textWidget,
     required bool isMy,
     required bool isFirst,
+    Function()? onClickSaveReport
   }) {
     final Color chatBackgroundColor =
         isMy ? ColorDefines.mainColor : ColorDefines.primaryWhite;
@@ -271,7 +316,7 @@ class AiReportPage extends BasePage<AiReportBloc, AiReportState> {
           textWidget,
           if (isFirst)
             GestureDetector(
-              onTap: () {},
+              onTap: onClickSaveReport,
               child: Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(vertical: 12),
@@ -294,5 +339,12 @@ class AiReportPage extends BasePage<AiReportBloc, AiReportState> {
         ],
       ),
     );
+  }
+
+  void _scrollJumpToDown() {
+    Future.delayed(Duration(milliseconds: 100), () {
+      _scrollController
+          .jumpTo(_scrollController.position.maxScrollExtent);
+    });
   }
 }

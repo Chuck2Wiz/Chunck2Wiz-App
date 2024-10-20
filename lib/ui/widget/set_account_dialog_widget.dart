@@ -79,9 +79,7 @@ Widget buildLogoutConfirmationDialog({required BuildContext context, required Fu
   return _buildSetAccountDialog(
     context: context,
     title: '로그아웃 하시겠습니까?',
-    onConfirm: () {
-      // Handle logout logic
-    },
+    onConfirm: onClickLogout,
   );
 }
 
