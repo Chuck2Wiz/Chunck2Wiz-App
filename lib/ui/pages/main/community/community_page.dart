@@ -75,13 +75,15 @@ class CommunityPage extends BasePage<CommunityBloc, CommunityState> {
             alignment: Alignment.bottomCenter,
             child: _articleWriteButton(
                 onClickWrite: () {
+                  final communityWriteBloc = CommunityWriteBloc(UserRepository(), ArticleRepository());
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (newContext) => MultiBlocProvider(
                         providers: [
                           BlocProvider.value(value: context.read<CommunityBloc>()),
-                          BlocProvider.value(value: context.read<CommunityWriteBloc>())
+                          BlocProvider.value(value: communityWriteBloc)
                         ],
                         child: const CommunityWritePage(),
                       ),

@@ -105,9 +105,6 @@ class MyApp extends StatelessWidget {
               BlocProvider<CommunityBloc>(
                 create: (context) => CommunityBloc(),
               ),
-              BlocProvider<CommunityWriteBloc>(
-                create: (context) => CommunityWriteBloc(UserRepository(), ArticleRepository()),
-              ),
               BlocProvider<MyBloc>(
                   create: (context) => MyBloc(),
               )
